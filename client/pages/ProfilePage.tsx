@@ -6,7 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 export default function ProfilePage() {
-  const { user } = useAuth();
+  const { user, role } = useAuth();
   const navigate = useNavigate();
 
   return (
@@ -14,10 +14,10 @@ export default function ProfilePage() {
       {/* Header */}
       <DynamicHeader
         logoText="PaperForge"
-        actions={[
+        actions={ (role !== "admin" && role !== "teacher")  ?[]: [
           { label: "Create Paper", onClick: () => (navigate("/")) },
           { label: "Papers", onClick: () => (navigate("/papers")) },
-        ]}
+        ] }
       />
 
       {/* Profile Info */}

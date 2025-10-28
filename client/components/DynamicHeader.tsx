@@ -46,6 +46,7 @@ export default function DynamicHeader({
 }: DynamicHeaderProps) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  console.log(actions);
 
   return (
     <header className="sticky top-0 z-10 border-b bg-background/80 backdrop-blur">
