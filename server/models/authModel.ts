@@ -15,8 +15,7 @@ const AuthModel = {
         password VARCHAR(255) NOT NULL,
         mobile VARCHAR(15),
         role ENUM('student', 'teacher', 'school', 'admin') DEFAULT 'student',
-        createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
       )
     `;
     await db.query(query);
