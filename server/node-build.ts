@@ -1,9 +1,9 @@
 import path from "path";
-import { createServer } from "./index";
-import * as express from "express";
-import { createConnection } from "@shared/db";
+import express from "express";
+import { createServer } from "./index.js";
+import { createConnection } from "@shared/db.js";
 
-const app = createServer();
+const app = await createServer();
 const port = process.env.PORT || 3000;
 const pool = await createConnection();
 
@@ -16,23 +16,20 @@ app.use(express.static(distPath));
 
 // Handle React Router - fallback for all non-API routes
 app.use((req, res, next) => {
-  // Skip API and health routes
   if (req.path.startsWith("/api/") || req.path.startsWith("/health")) {
     return res.status(404).json({ error: "API endpoint not found" });
   }
-
   res.sendFile(path.join(distPath, "index.html"));
 });
 
-// Start the server
 app.listen(port, () => {
-  console.log(`🚀 Fusion Starter server running on port ${port}`);
+  console.log(`🚀 Server running on port ${port}`);
   console.log(`📱 Frontend: http://localhost:${port}`);
   console.log(`🔧 API: http://localhost:${port}/api`);
 });
 
 // Graceful shutdown
-process.on("SIGTERM",async () => {
+process.on("SIGTERM", async () => {
   console.log("🛑 Received SIGTERM, shutting down gracefully");
   if (pool) {
     await pool.end();
