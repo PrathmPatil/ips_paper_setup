@@ -32,7 +32,7 @@ app.listen(port, () => {
 });
 
 // Graceful shutdown
-process.on("SIGTERM", () => {
+process.on("SIGTERM",async () => {
   console.log("🛑 Received SIGTERM, shutting down gracefully");
   if (pool) {
     await pool.end();
