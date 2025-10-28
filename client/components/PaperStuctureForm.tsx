@@ -23,7 +23,7 @@ import {
   perSubjectCount,
   totalCount,
 } from "@/lib/common";
-import { MultiSelectChild } from "./MultiSelectchild";
+import { MultiSelectDropdown } from "./MultiSelectDropdown";
 
 // ----------------- Excel Utils -----------------
 function getFilteredData(gradeId: string | null, subjectIds: string[] = []) {
@@ -227,7 +227,7 @@ export function DesignForm({
         <div className="grid grid-cols-2 gap-3">
           <div>
             <Label>Topics</Label>
-            <MultiSelectChild
+            <MultiSelectDropdown
               options={options || {}}
               value={selectedTopics}
               onChange={setSelectedTopics}
