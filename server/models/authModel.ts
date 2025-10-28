@@ -16,7 +16,7 @@ const AuthModel = {
         mobile VARCHAR(15),
         role ENUM('student', 'teacher', 'school', 'admin') DEFAULT 'student',
         createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
       )
     `;
     await db.query(query);
@@ -46,7 +46,7 @@ const AuthModel = {
   async getUserByEmail(email: string) {
     const [rows]: any = await db.query(
       `SELECT * FROM \`${this.tableName}\` WHERE email = ?`,
-      [email]
+      [email],
     );
     return rows[0] || null;
   },
@@ -54,7 +54,7 @@ const AuthModel = {
   async getUserById(id: number) {
     const [rows]: any = await db.query(
       `SELECT * FROM \`${this.tableName}\` WHERE id = ?`,
-      [id]
+      [id],
     );
     return rows[0] || null;
   },
