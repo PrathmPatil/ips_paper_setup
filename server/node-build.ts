@@ -1,9 +1,11 @@
 import path from "path";
 import { createServer } from "./index";
 import * as express from "express";
+import { createConnection } from "@shared/db";
 
 const app = createServer();
 const port = process.env.PORT || 3000;
+const pool = await createConnection();
 
 // In production, serve the built SPA files
 const __dirname = import.meta.dirname;
@@ -32,6 +34,10 @@ app.listen(port, () => {
 // Graceful shutdown
 process.on("SIGTERM", () => {
   console.log("🛑 Received SIGTERM, shutting down gracefully");
+  if (pool) {
+    await pool.end();
+    console.log("🔒 MySQL pool closed");
+  }
   process.exit(0);
 });
 
