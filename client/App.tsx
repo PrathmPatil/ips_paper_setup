@@ -11,6 +11,10 @@ import Papers from "./pages/Papers";
 import EditPaper from "./pages/EditPaper";
 import NotFound from "./pages/NotFound";
 import Dashboard from "./pages/Dashboard";
+import Auth from "./pages/Auth";
+import ProtectedRoute from "./context/ProtectedRoute";
+import { AuthProvider } from "./context/AuthContext";
+import ProfilePage from "./pages/ProfilePage";
 
 const queryClient = new QueryClient();
 
@@ -20,20 +24,81 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/papers" element={<Papers />} />
-          <Route path="/papers/:paperId" element={<EditPaper />} />
-          {/* teacher */}
-          <Route path="/teachers" element={<Dashboard />} />
-          <Route path="/teachers/:id" element={<EditPaper />} />
-          {/* student */}
-          <Route path="/students" element={<Papers />} />
-          <Route path="/students/:id" element={<EditPaper />} />
+        <AuthProvider>
+          <Routes>
+            {/* login */}
+            <Route path="/login" element={<Auth />} />
+            <Route
+              path="/"
+              element={
+                <ProtectedRoute>
+                  <Index />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/papers"
+              element={
+                <ProtectedRoute>
+                  <Papers />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/papers/:paperId"
+              element={
+                <ProtectedRoute>
+                  <EditPaper />
+                </ProtectedRoute>
+              }
+            />
+            {/* teacher */}
+            <Route
+              path="/teachers"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/teachers/:id"
+              element={
+                <ProtectedRoute>
+                  <EditPaper />
+                </ProtectedRoute>
+              }
+            />
+            {/* student */}
+            <Route
+              path="/students"
+              element={
+                <ProtectedRoute>
+                  <Papers />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/students/:id"
+              element={
+                <ProtectedRoute>
+                  <EditPaper />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <ProfilePage />
+                </ProtectedRoute>
+              }
+            />
 
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </AuthProvider>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>

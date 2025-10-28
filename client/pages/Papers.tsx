@@ -22,6 +22,7 @@ import { exam_pattern } from "@/data/subject_topic";
 import { PaperPreview } from "@/components/PaperPreview";
 import { savePaperFunction } from "@/data/static";
 import { DynamicConfirmModal } from "@/components/DynamicConfirmModal";
+import DynamicHeader from "@/components/DynamicHeader";
 
 const Papers = () => {
   const [form, setForm] = useState({
@@ -40,7 +41,7 @@ const Papers = () => {
   const [selectedQuestions, setSelectedQuestions] = useState({});
   const [selectPaper, setSelectPaper] = useState({});
   const [confirmPaper, setConfirmPaper] = useState(null);
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const updateForm = (key, value) => {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -112,7 +113,6 @@ const Papers = () => {
 
   // Clear all filters
   const clearFilters = () => {
-
     setForm({
       gradeId: "",
       sectionId: "",
@@ -215,11 +215,12 @@ const Papers = () => {
   };
 
   console.log(confirmPaper);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-background/80">
       <div className="container py-6 space-y-4">
         {/* Header */}
-        <div className="flex items-center justify-between mb-4">
+        {/* <div className="flex items-center justify-between mb-4">
           <h1 className="text-2xl font-bold flex items-center gap-3">
             <div className="h-8 w-8 rounded-md bg-primary" />
             Saved Papers
@@ -227,7 +228,13 @@ const Papers = () => {
           <Link to="/">
             <Button variant="ghost">Create Paper</Button>
           </Link>
-        </div>
+        </div> */}
+        <DynamicHeader
+          subTitle="Saved Papers"
+          actions={[
+            { label: "Create Paper", onClick: () => navigate("/") }
+          ]}
+        />
 
         {/* Filters */}
         <Card className="shadow-sm">

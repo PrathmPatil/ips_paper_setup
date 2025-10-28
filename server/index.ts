@@ -18,8 +18,9 @@ import standardRoutes from "./routes/standardRoutes.js";
 import paperRoutes from "./routes/paperRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js"; // ✅ new
 import imageRoutes from "./routes/imageRoutes.js";
-
-export function createServer() {
+import authRoutes from "./routes/auth.js"
+import AuthModel from "./models/authModel.js"
+export async function createServer() {
   const app = express();
 
   // ✅ Middleware
@@ -28,6 +29,8 @@ export function createServer() {
   app.use(express.urlencoded({ extended: true, limit: "50mb" }));
   app.use(bodyParser.json({ limit: "50mb" }));
   app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
+
+  await AuthModel.createTableIfNotExists()
 
   // ✅ Serve static uploads
   app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
@@ -50,6 +53,8 @@ export function createServer() {
   app.get("/api/config", handleGetConfig);
   app.post("/api/questions/search", handleSearchQuestions);
   app.get("/api/questions/:id", handleGetQuestion);
+
+  app.use("/api/auth", authRoutes);
 
   app.get("/api/welcome", (_, res) => res.send("welcome"));
 

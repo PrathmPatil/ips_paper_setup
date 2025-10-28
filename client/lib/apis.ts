@@ -117,7 +117,7 @@ export const deletePaper = async (id: number) => {
 
 export const loginUser = async (user: Login) => {
   const response = await apiCall({
-    url: "/user/login",
+    url: "auth/login",
     method: "POST",
     data: user,
   });
@@ -127,7 +127,7 @@ export const loginUser = async (user: Login) => {
 
 export const RegisterUser = async (user: User) => {
   const response = await apiCall({
-    url: "/user/register",
+    url: "auth/register",
     method: "POST",
     data: user,
   });

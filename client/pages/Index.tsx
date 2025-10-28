@@ -10,6 +10,7 @@ import { MarkingScheme, Question } from "@shared/types";
 import { useNavigate } from "react-router-dom";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { PaperPreview } from "@/components/PaperPreview";
+import DynamicHeader from "@/components/DynamicHeader";
 
 export default function IndexPage() {
   const [title, setTitle] = useState("Question Paper");
@@ -22,9 +23,13 @@ export default function IndexPage() {
   const [subjectList, setSubjectList] = useState<string[]>([]);
   const [topicList, setTopicList] = useState<string[]>([]);
   const [allQuestions, setAllQuestions] = useState<any>({});
-  const [selectedAnswers, setSelectedAnswers] = useState<Record<string, any>>({});
+  const [selectedAnswers, setSelectedAnswers] = useState<Record<string, any>>(
+    {},
+  );
   const [topicIds, setTopicIds] = useState<string[]>([]);
-  const [selectedQuestions, setSelectedQuestions] = useState<Record<string, Question[]>>({});
+  const [selectedQuestions, setSelectedQuestions] = useState<
+    Record<string, Question[]>
+  >({});
   const [manualTopic, setManualTopic] = useState<string>("");
   const [canSave, setCanSave] = useState(false);
   const [isPreview, setIsPreview] = useState(false);
@@ -104,8 +109,12 @@ export default function IndexPage() {
         if (!updated[sub]) updated[sub] = [];
         const exists = updated[sub].some((item) => item.id === q.id);
         if (!exists) {
-          const existingAns = selectedAnswers?.[sub]?.find((a: any) => a.id === q.id)?.answer;
-          const questionWithAnswer = existingAns ? { ...q, answer: existingAns } : { ...q };
+          const existingAns = selectedAnswers?.[sub]?.find(
+            (a: any) => a.id === q.id,
+          )?.answer;
+          const questionWithAnswer = existingAns
+            ? { ...q, answer: existingAns }
+            : { ...q };
           updated[sub] = [...updated[sub], questionWithAnswer];
         }
       } else {
@@ -116,7 +125,9 @@ export default function IndexPage() {
         setSelectedAnswers((ansPrev) => {
           const ansUpdated = { ...ansPrev };
           if (ansUpdated[sub]) {
-            ansUpdated[sub] = ansUpdated[sub].filter((item: any) => item.id !== q.id);
+            ansUpdated[sub] = ansUpdated[sub].filter(
+              (item: any) => item.id !== q.id,
+            );
             if (ansUpdated[sub].length === 0) delete ansUpdated[sub];
           }
           return ansUpdated;
@@ -128,7 +139,11 @@ export default function IndexPage() {
   };
 
   // Handle answer input
-  const handleAnswerChange = (q: Question, answer: string | string[], sub: string) => {
+  const handleAnswerChange = (
+    q: Question,
+    answer: string | string[],
+    sub: string,
+  ) => {
     setSelectedAnswers((prev) => {
       const updated = { ...prev };
       if (!updated[sub]) updated[sub] = [];
@@ -142,7 +157,8 @@ export default function IndexPage() {
       const updated = { ...prev };
       if (!updated[sub]) updated[sub] = [];
       const qIndex = updated[sub].findIndex((item) => item.id === q.id);
-      if (qIndex >= 0) updated[sub][qIndex] = { ...updated[sub][qIndex], answer };
+      if (qIndex >= 0)
+        updated[sub][qIndex] = { ...updated[sub][qIndex], answer };
       else updated[sub] = [...updated[sub], { ...q, answer }];
       return updated;
     });
@@ -189,7 +205,7 @@ export default function IndexPage() {
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-background/80">
       {/* HEADER */}
-      <header className="sticky top-0 z-10 border-b bg-background/80 backdrop-blur">
+      {/* <header className="sticky top-0 z-10 border-b bg-background/80 backdrop-blur">
         <div className="container py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="h-8 w-8 rounded-md bg-primary" />
@@ -206,14 +222,60 @@ export default function IndexPage() {
             }} disabled={!canSave}>Save</Button>
           </div>
         </div>
-      </header>
+      </header> */}
+      <DynamicHeader
+        actions={[
+          { label: "Papers", onClick: () => handleNavigate("/papers") },
+          {
+            label: "Preview",
+            onClick: () => setIsPreview(true),
+            variant: "outline",
+            disabled: !Object.keys(selectedQuestions).length,
+          },
+          {
+            label: "Export PDF",
+            onClick: () =>
+              exportPaperPdf(title, selectedQuestions, selectedAnswers),
+            variant: "outline",
+            disabled: !Object.keys(selectedQuestions).length,
+          },
+          {
+            label: "Export Excel",
+            onClick: () =>
+              exportPaperExcel(title, selectedQuestions, selectedAnswers),
+            variant: "outline",
+            disabled: !Object.keys(selectedQuestions).length,
+          },
+        ]}
+        onSave={async () => {
+          await savePaperFunction(
+            title,
+            gradeId,
+            sectionId,
+            topicIds,
+            subjectIds,
+            skills,
+            types,
+            marking,
+            selectedQuestions,
+            selectedAnswers,
+          );
+          setCanSave(false);
+        }}
+        canSave={canSave}
+      />
 
       {/* MAIN */}
       <main className="mx-12 py-6 grid gap-6 lg:grid-cols-5">
         {/* LEFT COLUMN */}
         <div className="lg:col-span-1 grid gap-6">
           <DesignForm
-            config={{ grades: exam_pattern.grades, sections: [], subjects: [], examTypes: [] }}
+            config={{
+              grades: exam_pattern.grades,
+              sections: [],
+              subjects: [],
+              examTypes: [],
+            }}
             subjectList={subjectList}
             topicList={topicList}
             title={title}
@@ -262,7 +324,9 @@ export default function IndexPage() {
       <footer className="border-t">
         <div className="container py-6 text-xs text-muted-foreground flex items-center justify-between">
           <span>© PaperForge</span>
-          <span>Build dynamic question papers with dependent selections and exports.</span>
+          <span>
+            Build dynamic question papers with dependent selections and exports.
+          </span>
         </div>
       </footer>
 
